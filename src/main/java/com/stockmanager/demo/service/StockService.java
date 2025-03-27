@@ -26,4 +26,8 @@ public class StockService {
     public List<Stock> getTopGainers() throws IOException {
         return stockRepository.getTopGainers();
     }
+
+    public Stock getStock(String symbol) throws IOException {
+        return stockRepository.getStock(symbol);
+    }
 }
