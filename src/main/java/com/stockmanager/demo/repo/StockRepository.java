@@ -1,6 +1,7 @@
 package com.stockmanager.demo.repo;
 
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
+import com.stockmanager.demo.model.History;
 import com.stockmanager.demo.model.Stock;
 import com.stockmanager.demo.model.TrendingTicker;
 import com.stockmanager.demo.utils.StockHelper;
@@ -51,5 +52,15 @@ public class StockRepository {
         Document document = getDocument(stockHelper.stockUrlConstruct(symbol));
         return document.selectFirst(".noData.yf-wnifss") != null ? new Stock()
                 : stockHelper.parseDetailStock(document);
+    }
+
+    public List<History> getHistory(String symbol, String period1, String period2) throws IOException {
+        Document document = getDocument(stockHelper.stockUrlConstruct(symbol, period1, period2));
+        return stockHelper.parseHistoryPrice(document);
+    }
+
+    public List<History> getHistory(String symbol) throws IOException{
+        Document document = getDocument(stockHelper.stockUrlConstruct(symbol, null, null));
+        return stockHelper.parseHistoryPrice(document);
     }
 }

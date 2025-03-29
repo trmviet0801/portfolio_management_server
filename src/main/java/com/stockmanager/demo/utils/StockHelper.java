@@ -1,14 +1,20 @@
 package com.stockmanager.demo.utils;
 
+import com.stockmanager.demo.model.History;
 import com.stockmanager.demo.model.Stock;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 @Component
 public class StockHelper {
@@ -43,6 +49,12 @@ public class StockHelper {
 
     public String stockUrlConstruct(String symbol) {
         return stockUrl + symbol;
+    }
+
+    public String stockUrlConstruct(String symbol, String period1, String period2) {
+        if (period1 != null && period2 != null)
+            return stockUrlConstruct(symbol) + "/history/?period1=" + period1 + "&period2=" + period2;
+        return stockUrlConstruct(symbol) + "/history";
     }
 
     public Stock parseDetailStock(Document document) {
@@ -80,4 +92,34 @@ public class StockHelper {
         }
         return List.of(name.toString().trim(), symbol.toString());
     }
+
+    public long convertStringToUnixTimeStamp(String time) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(time, dateTimeFormatter);
+        return localDateTime.atZone(ZoneId.of("UTC")).toEpochSecond();
+    }
+
+    public List<History> parseHistoryPrice(Document document) {
+        Element tbody = document.selectFirst("tbody");
+        Elements trs = tbody.select("tr.yf-1jecxey");
+        List<History> history = new ArrayList<>();
+        for (Element tr : trs) {
+            if (tr.select("td.yf-1jecxey").size() > 2)
+                history.add(parseTrToHistory(tr));
+        }
+        return history;
+    }
+
+    private History parseTrToHistory(Element tr) {
+        History history = new History();
+        Elements tds = tr.select("td.yf-1jecxey");
+        history.setDate(tds.get(0).text());
+        history.setOpen(Double.parseDouble(tds.get(1).text()));
+        history.setHigh(Double.parseDouble(tds.get(2).text()));
+        history.setLow(Double.parseDouble(tds.get(3).text()));
+        history.setClose(Double.parseDouble(tds.get(4).text()));
+        history.setVolume(tds.get(6).text());
+        return history;
+    }
+
 }
