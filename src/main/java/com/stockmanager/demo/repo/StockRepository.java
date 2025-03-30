@@ -1,9 +1,12 @@
 package com.stockmanager.demo.repo;
 
+import com.stockmanager.demo.exception.InvalidSymbolNameException;
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
+import com.stockmanager.demo.model.Financials;
 import com.stockmanager.demo.model.History;
 import com.stockmanager.demo.model.Stock;
 import com.stockmanager.demo.model.TrendingTicker;
+import com.stockmanager.demo.utils.FinancialHelper;
 import com.stockmanager.demo.utils.StockHelper;
 import com.stockmanager.demo.utils.TrendingTickerHelper;
 import org.jsoup.Jsoup;
@@ -31,6 +34,8 @@ public class StockRepository {
 
     @Autowired
     private StockHelper stockHelper;
+    @Autowired
+    private FinancialHelper financialHelper;
 
     public List<TrendingTicker> getTrendingTickers() throws InvalidTrendingTickerException, IOException {
         Document document = getDocument(lookupUrl);
@@ -62,5 +67,10 @@ public class StockRepository {
     public List<History> getHistory(String symbol) throws IOException{
         Document document = getDocument(stockHelper.stockUrlConstruct(symbol, null, null));
         return stockHelper.parseHistoryPrice(document);
+    }
+
+    public Financials getFinancials(String symbol) throws IOException, InvalidSymbolNameException, NoSuchFieldException, IllegalAccessException {
+        Document document = getDocument(financialHelper.constructUrl(symbol));
+        return financialHelper.parseFinancials(document);
     }
 }

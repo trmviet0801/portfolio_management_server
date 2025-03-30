@@ -1,6 +1,8 @@
 package com.stockmanager.demo.service;
 
+import com.stockmanager.demo.exception.InvalidSymbolNameException;
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
+import com.stockmanager.demo.model.Financials;
 import com.stockmanager.demo.model.History;
 import com.stockmanager.demo.model.Stock;
 import com.stockmanager.demo.model.TrendingTicker;
@@ -37,5 +39,9 @@ public class StockService {
         if (period1 != null && period2 != null)
             return stockRepository.getHistory(symbol, period1, period2);
         return stockRepository.getHistory(symbol);
+    }
+
+    public Financials getFinancials(String symbol) throws IOException, InvalidSymbolNameException, NoSuchFieldException, IllegalAccessException {
+        return stockRepository.getFinancials(symbol);
     }
 }

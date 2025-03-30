@@ -1,6 +1,8 @@
 package com.stockmanager.demo.controller;
 
+import com.stockmanager.demo.exception.InvalidSymbolNameException;
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
+import com.stockmanager.demo.model.Financials;
 import com.stockmanager.demo.model.History;
 import com.stockmanager.demo.model.Stock;
 import com.stockmanager.demo.model.TrendingTicker;
@@ -37,5 +39,10 @@ public class StockController {
                                          @RequestParam(name = "period1", required = false) String period1,
                                          @RequestParam(name = "period2", required = false) String period2) throws IOException {
         return stockService.getStockHistory(symbol, period1, period2);
+    }
+
+    @GetMapping("stock/{symbol}/financials")
+    public Financials getFinancialData(@PathVariable String symbol) throws IOException, InvalidSymbolNameException, NoSuchFieldException, IllegalAccessException {
+        return stockService.getFinancials(symbol);
     }
 }

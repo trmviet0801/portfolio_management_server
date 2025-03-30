@@ -6,7 +6,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 
 @Component
 public class StockHelper {
@@ -67,7 +65,10 @@ public class StockHelper {
 
         stock.setPrice(Double.parseDouble(price.text()));
         stock.setChange(Double.parseDouble(changes.get(1).text()));
-        stock.setPercentChange(Double.parseDouble(changes.get(2).text().replace("%", "").replace("(", "").replace(")", "")));
+        stock.setPercentChange(Double.parseDouble(changes.get(2).text()
+                .replace("%", "")
+                .replace("(", "")
+                .replace(")", "")));
         stock.setName(parseNameAndSymbol(name.text()).get(0));
         stock.setSymbol(parseNameAndSymbol(name.text()).get(1));
         stock.setDescription(description.text());
@@ -121,5 +122,4 @@ public class StockHelper {
         history.setVolume(tds.get(6).text());
         return history;
     }
-
 }
