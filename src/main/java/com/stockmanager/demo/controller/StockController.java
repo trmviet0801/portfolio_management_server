@@ -2,10 +2,7 @@ package com.stockmanager.demo.controller;
 
 import com.stockmanager.demo.exception.InvalidSymbolNameException;
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
-import com.stockmanager.demo.model.Financials;
-import com.stockmanager.demo.model.History;
-import com.stockmanager.demo.model.Stock;
-import com.stockmanager.demo.model.TrendingTicker;
+import com.stockmanager.demo.model.*;
 import com.stockmanager.demo.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +41,10 @@ public class StockController {
     @GetMapping("stock/{symbol}/financials")
     public Financials getFinancialData(@PathVariable String symbol) throws IOException, InvalidSymbolNameException, NoSuchFieldException, IllegalAccessException {
         return stockService.getFinancials(symbol);
+    }
+
+    @GetMapping("stock/{symbol}/news")
+    public List<News> getNews(@PathVariable String symbol) throws InvalidSymbolNameException, IOException {
+        return stockService.getNews(symbol);
     }
 }

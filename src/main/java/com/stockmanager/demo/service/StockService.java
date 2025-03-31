@@ -2,10 +2,7 @@ package com.stockmanager.demo.service;
 
 import com.stockmanager.demo.exception.InvalidSymbolNameException;
 import com.stockmanager.demo.exception.InvalidTrendingTickerException;
-import com.stockmanager.demo.model.Financials;
-import com.stockmanager.demo.model.History;
-import com.stockmanager.demo.model.Stock;
-import com.stockmanager.demo.model.TrendingTicker;
+import com.stockmanager.demo.model.*;
 import com.stockmanager.demo.repo.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,5 +40,9 @@ public class StockService {
 
     public Financials getFinancials(String symbol) throws IOException, InvalidSymbolNameException, NoSuchFieldException, IllegalAccessException {
         return stockRepository.getFinancials(symbol);
+    }
+
+    public List<News> getNews(String symbol) throws InvalidSymbolNameException, IOException {
+        return stockRepository.getNews(symbol);
     }
 }
